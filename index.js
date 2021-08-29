@@ -22,13 +22,18 @@ Array.prototype.remove = function() {
 const readHosts = fs.readFileSync(path.join(__dirname, "host.txt"), "utf8")
 const readPass = fs.readFileSync(path.join(__dirname, "password.txt"), "utf8")
 const readCmd = fs.readFileSync(path.join(__dirname, "command.txt"), "utf8")
-const hostList = readHosts.split("\r\n")
-const passList = readPass.split("\r\n")
-const commandList = readCmd.split("\r\n")
+const hostList = readHosts.split("\n")
+const passList = readPass.split("\n")
+const commandList = readCmd.split("\n")
+
+let delCommand = []
 commandList.map((cmd, indexCmd) => {
-	if (cmd[0] === "#" || cmd.length === 0) {
-		commandList.remove(cmd)
+	if (cmd.trim()[0] === "#" || cmd.trim().length === 0) {
+		delCommand.push(cmd)
 	}
+})
+delCommand.map((val)=>{
+	commandList.remove(val)
 })
 console.log(`${colors.yellow(hostList.length)} server ${commandList.length} command`)
 commandList.map((cmd, indexCmd) => {
@@ -83,7 +88,7 @@ readline.on("yes", ()=> {
 					let count_cmd = 0
 					ssh.exec(cmd, {
 						out: (stdout) => {
-							console.log(`server ${index+1} host: ${colors.yellow(host)} pass: ${passList[index]}`)
+							console.log(`server ${colors.blue(index+1)} host: ${colors.yellow(host)} pass: ${passList[index]}`)
 							console.log("command: "+ cmd)
 							console.log(stdout)
 						},
